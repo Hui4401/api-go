@@ -7,10 +7,9 @@ import (
 
 // UserRegisterService 管理用户注册服务
 type UserRegisterService struct {
-	Nickname        string `form:"nickname" json:"nickname" binding:"required,min=2,max=30"`
-	UserName        string `form:"user_name" json:"user_name" binding:"required,min=5,max=30"`
-	Password        string `form:"password" json:"password" binding:"required,min=8,max=18"`
-	PasswordConfirm string `form:"password_confirm" json:"password_confirm" binding:"required,min=8,max=18"`
+	Username        string `form:"username" binding:"required,min=3,max=10"`
+	Password        string `form:"password" binding:"required,min=6,max=18"`
+	PasswordConfirm string `form:"password_confirm" binding:"required,min=6,max=18"`
 }
 
 // Valid 验证表单
@@ -22,33 +21,21 @@ func (service *UserRegisterService) Valid() *serializer.Response {
 		}
 	}
 
-	count := 0
-	model.DB.Model(&model.User{}).Where("nickname = ?", service.Nickname).Count(&count)
-	if count > 0 {
-		return &serializer.Response{
-			Code: serializer.UserRepeatError,
-			Msg:  "昵称被占用",
-		}
-	}
-
-	count = 0
-	model.DB.Model(&model.User{}).Where("user_name = ?", service.UserName).Count(&count)
-	if count > 0 {
+	res := model.DB.Where("user_name = ?", service.Username).First(&model.User{})
+	if res.RowsAffected > 0 {
 		return &serializer.Response{
 			Code: serializer.UserRepeatError,
 			Msg:  "用户名被占用",
 		}
 	}
-
 	return nil
 }
 
 // Register 用户注册
 func (service *UserRegisterService) Register() *serializer.Response {
 	user := model.User{
-		Nickname: service.Nickname,
-		UserName: service.UserName,
-		Status:   model.Active,
+		Username: service.Username,
+		Nickname: service.Username,
 	}
 
 	// 表单验证

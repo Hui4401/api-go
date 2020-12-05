@@ -14,4 +14,6 @@ require (
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.4.0
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/gorm v1.20.8
 )

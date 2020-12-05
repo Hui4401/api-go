@@ -10,7 +10,7 @@ func main() {
 	conf.Init()
 
 	// 装载路由
-	r := server.NewRouter()
+	r := server.InitRouter()
 
 	// 运行在8080端口
 	r.Run()
