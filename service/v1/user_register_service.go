@@ -5,7 +5,7 @@ import (
     "api-go/serializer"
 )
 
-// 用户注册所需信息结构体
+// 用户注册所需信息
 type UserRegisterService struct {
     Username        string `form:"username" binding:"required,min=3,max=10"`
     Password        string `form:"password" binding:"required,min=6,max=18"`

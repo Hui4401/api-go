@@ -2,7 +2,6 @@ package v1
 
 import (
     "api-go/auth"
-    "api-go/conf"
     "api-go/model"
     "api-go/serializer"
     "github.com/dgrijalva/jwt-go"
@@ -10,49 +9,44 @@ import (
     "time"
 )
 
-// UserLoginService 管理用户登录的服务
+// 用户登录所需信息
 type UserLoginService struct {
-    UserName string `form:"user_name" json:"user_name" binding:"required,min=5,max=30"`
-    Password string `form:"password" json:"password" binding:"required,min=8,max=18"`
+    Username string `form:"username" binding:"required,min=3,max=10"`
+    Password string `form:"password" binding:"required,min=6,max=18"`
 }
 
-func GenerateToken(user model.User, ExpiresTime int64) (string, error) {
+func GenerateToken(userID uint) (string, error) {
     claims := auth.Jwt{
-        jwt.StandardClaims{
-            ExpiresAt: ExpiresTime,
+        StandardClaims: jwt.StandardClaims{
+            ExpiresAt: time.Now().Add(auth.JwtExpiresTime).Unix(),
             IssuedAt:  time.Now().Unix(),
         },
-        user,
+        UserID: userID,
     }
-
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-    jwtString, err := token.SignedString(conf.SigningKey)
-    return jwtString, err
+    return token.SignedString([]byte(auth.JwtSecretKey))
 }
 
 // Login 用户登录函数
 func (service *UserLoginService) Login() *serializer.Response {
     var user model.User
-    ExpriesTime := time.Now().Add(time.Hour * time.Duration(720)).Unix()
 
-    if err := model.DB.Where("user_name = ?", service.UserName).First(&user).Error; err != nil {
+    if err := model.DB.Where("username = ?", service.Username).First(&user).Error; err != nil {
         return serializer.ErrorResponse(serializer.CodeUserNotExistError)
     }
 
-    if user.CheckPassword(service.Password) == false {
+    if !user.CheckPassword(service.Password) {
         return serializer.ErrorResponse(serializer.CodePasswordError)
     }
 
-    token, err := GenerateToken(user, ExpriesTime)
+    token, err := GenerateToken(user.ID)
     if err != nil {
         return serializer.ErrorResponse(serializer.CodeUnknownError)
     }
 
-    return &serializer.Response{
-        Data: gin.H{
-            "access_token": token,
-            "expires_in":   ExpriesTime,
-            "token_type":   "Bearer",
-        },
+    data := gin.H{
+        "token": token,
+        "user": serializer.BuildUserData(&user),
     }
+    return serializer.OkResponse(&data)
 }
