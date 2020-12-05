@@ -1,38 +1,38 @@
 package server
 
 import (
-    "api-go/api"
-    "api-go/api/v1"
-    "github.com/gin-gonic/gin"
-    "api-go/middleware"
+	"api-go/api"
+	"api-go/api/v1"
+	"api-go/middleware"
+	"github.com/gin-gonic/gin"
 )
 
 // 路由配置
 func InitRouter() *gin.Engine {
-    r := gin.Default()
+	r := gin.Default()
 
-    // 主页
-    r.GET("/", api.Index)
+	// 主页
+	r.GET("/", api.Index)
 
-    v1Group := r.Group("/api/v1")
-    {
-        // 用户注册
-        v1Group.POST("/user/register", v1.UserRegister)
+	v1Group := r.Group("/api/v1")
+	{
+		// 用户注册
+		v1Group.POST("/user/register", v1.UserRegister)
 
-        // 用户登录
-        v1Group.POST("/user/login", v1.UserLogin)
+		// 用户登录
+		v1Group.POST("/user/login", v1.UserLogin)
 
-        // 需要权限
-        jwtGroup := v1Group.Group("")
-        jwtGroup.Use(middleware.JwtRequired())
-        {
-           // 查看个人信息
-           jwtGroup.GET("/user/me", v1.UserMe)
-           //// 修改密码
-           //jwtGroup.POST("/user/changepassword", v1.ChangePassword)
-           //// 退出登录
-           //jwtGroup.POST("/user/logout", v1.Logout)
-        }
-    }
-    return r
+		// 需要权限
+		jwtGroup := v1Group.Group("")
+		jwtGroup.Use(middleware.JwtRequired())
+		{
+			// 查看个人信息
+			jwtGroup.GET("/user/me", v1.UserMe)
+			//// 修改密码
+			//jwtGroup.POST("/user/changepassword", v1.ChangePassword)
+			//// 退出登录
+			//jwtGroup.POST("/user/logout", v1.Logout)
+		}
+	}
+	return r
 }
