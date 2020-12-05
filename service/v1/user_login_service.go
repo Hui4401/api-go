@@ -36,25 +36,16 @@ func (service *UserLoginService) Login() *serializer.Response {
     ExpriesTime := time.Now().Add(time.Hour * time.Duration(720)).Unix()
 
     if err := model.DB.Where("user_name = ?", service.UserName).First(&user).Error; err != nil {
-        return &serializer.Response{
-            Code: serializer.UserNotFoundError,
-            Msg:  "账号或者密码错误",
-        }
+        return serializer.ErrorResponse(serializer.CodeUserNotExistError)
     }
 
     if user.CheckPassword(service.Password) == false {
-        return &serializer.Response{
-            Code: serializer.UserPasswordError,
-            Msg:  "账号或密码错误",
-        }
+        return serializer.ErrorResponse(serializer.CodePasswordError)
     }
 
     token, err := GenerateToken(user, ExpriesTime)
     if err != nil {
-        return &serializer.Response{
-            Code:  serializer.ServerPanicError,
-            Error: err.Error(),
-        }
+        return serializer.ErrorResponse(serializer.CodeUnknownError)
     }
 
     return &serializer.Response{

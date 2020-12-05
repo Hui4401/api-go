@@ -24,12 +24,11 @@ func Init() {
         gin.SetMode(gin.ReleaseMode)
     }
 
-    if os.Getenv("RIM") == "use" {
-        // 启动各种连接单例
-        model.Database(os.Getenv("MYSQL_DSN"))
-        cache.Redis()
 
-    }
+    // 启动各种连接单例
+    model.Database(os.Getenv("MYSQL_DSN"))
+    cache.Redis()
+
 
     if gin.Mode() == gin.ReleaseMode {
         go func() {

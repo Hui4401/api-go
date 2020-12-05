@@ -1,23 +1,26 @@
 package serializer
 
-import "time"
-
-// Response 团队基础序列化器
+// 基本响应格式
 type Response struct {
-    Code      int         `json:"code"`
-    Data      interface{} `json:"data"`
-    Msg       string      `json:"msg"`
-    Error     string      `json:"error"`
-    TimeStamp int64       `json:"timestamp"`
+    Code errorCode   `json:"code"`
+    Msg  string      `json:"msg"`
+    Data interface{} `json:"data"`
 }
 
-func (response Response) Result() Response {
-    response.TimeStamp = time.Now().Unix()
-    return response
+// 请求成功响应
+func OkResponse(data interface{}) *Response {
+    return &Response{
+        Code: CodeOk,
+        Msg:  GetErrorMsg(CodeOk),
+        Data: data,
+    }
 }
 
-// TrackedErrorResponse 有追踪信息的错误响应
-type TrackedErrorResponse struct {
-    Response
-    TrackID string `json:"track_id"`
+// 请求失败响应
+func ErrorResponse(code errorCode) *Response {
+    return &Response{
+        Code: code,
+        Msg:  GetErrorMsg(code),
+        Data: nil,
+    }
 }

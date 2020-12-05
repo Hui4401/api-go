@@ -7,8 +7,6 @@ import (
     "api-go/serializer"
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
-    "net/http"
-    "strings"
 )
 
 // JwtRequired 需要在Header中传递token
@@ -18,43 +16,25 @@ func JwtRequired() gin.HandlerFunc {
         userToken := c.Request.Header.Get("Authorization")
         // 判断请求头中是否有token
         if userToken == "" {
-            c.JSON(http.StatusOK, serializer.Response{
-                Code: serializer.UserNotPermissionError,
-                Msg:  "令牌不能为空！",
-            }.Result())
+            c.JSON(200, serializer.ErrorResponse(serializer.CodeTokenNotFoundError))
             c.Abort()
             return
         }
-
-        split := strings.Split(userToken, " ")
-        if len(split) != 2 || split[0] != "Bearer"{
-            c.JSON(http.StatusOK, serializer.Response{
-                Code: serializer.UserNotPermissionError,
-                Msg:  "令牌格式不正确",
-            }.Result())
-            c.Abort()
-            return
-        }
-
 
         // 解码token值
-        token, err := jwt.ParseWithClaims(split[1], &auth.Jwt{}, func(token *jwt.Token) (interface{}, error) { return conf.SigningKey, nil })
+        token, err := jwt.ParseWithClaims(userToken, &auth.Jwt{}, func(token *jwt.Token) (interface{}, error) {
+            return conf.SigningKey, nil
+        })
         if err != nil || token.Valid != true {
             // 过期或者非正确处理
-            c.JSON(http.StatusOK, serializer.Response{
-                Code: serializer.UserNotPermissionError,
-                Msg:  "令牌错误！",
-            }.Result())
+            c.JSON(200, serializer.ErrorResponse(serializer.CodeTokenExpiredError))
             c.Abort()
             return
         }
 
         // 判断令牌是否在黑名单里面
         if result, _ := cache.RedisClient.SIsMember("jwt:baned", token.Raw).Result(); result {
-            c.JSON(http.StatusOK, serializer.Response{
-                Code: serializer.UserNotPermissionError,
-                Msg:  "令牌已注销!",
-            }.Result())
+            c.JSON(200, serializer.ErrorResponse(serializer.CodeTokenExpiredError))
             c.Abort()
             return
         }

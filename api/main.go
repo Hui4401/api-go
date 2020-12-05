@@ -2,9 +2,6 @@ package api
 
 import (
     "api-go/model"
-    "api-go/serializer"
-    "encoding/json"
-    "fmt"
     "github.com/gin-gonic/gin"
 )
 
@@ -22,21 +19,4 @@ func CurrentUser(c *gin.Context) *model.User {
         }
     }
     return nil
-}
-
-// ErrorResponse 返回错误消息
-func ErrorResponse(err error) serializer.Response {
-    if _, ok := err.(*json.UnmarshalTypeError); ok {
-        return serializer.Response{
-            Code:  serializer.UserInputError,
-            Msg:   "JSON类型不匹配",
-            Error: fmt.Sprint(err),
-        }
-    }
-
-    return serializer.Response{
-        Code:  serializer.UserInputError,
-        Msg:   "参数错误",
-        Error: fmt.Sprint(err),
-    }
 }
