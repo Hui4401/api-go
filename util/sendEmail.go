@@ -19,14 +19,14 @@ func SendEmail(username string, password string, host string, to []string, subje
 			SendEmail("...@qq.com", ".....", "smtp.qq.com", "testSubject", "The email is test")
 	*/
 	auth := smtp.PlainAuth("", username, password, host)
-	content_type := "Content-Type: text/plain" + "; charset=UTF-8"
+	contentType := "Content-Type: text/plain" + "; charset=UTF-8"
 	isSuccess := make(chan string)
 	for _, i := range to {
 		go func(i string) {
 			msg := []byte("To: " + i + "\r\n" +
 				"From: " + username + "\r\n" +
 				"Subject: " + subject + "\r\n" +
-				content_type + "\r\n\r\n" +
+				contentType + "\r\n\r\n" +
 				body)
 			if err := smtp.SendMail(fmt.Sprintf("%s:25", host), auth, username, []string{i}, msg); err != nil {
 				fmt.Printf("%s邮箱格式不正确.\n", i)

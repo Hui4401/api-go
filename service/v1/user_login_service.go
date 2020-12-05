@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"api-go/auth"
+	"api-go/middleware/auth"
 	"api-go/model"
 	"api-go/serializer"
 	"github.com/dgrijalva/jwt-go"
@@ -16,14 +16,14 @@ type UserLoginService struct {
 }
 
 func GenerateToken(userID uint) (string, error) {
-	claims := auth.Jwt{
+	claim := auth.JwtClaim{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(auth.JwtExpiresTime).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		UserID: userID,
 	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	return token.SignedString([]byte(auth.JwtSecretKey))
 }
 

@@ -1,12 +1,23 @@
-package middleware
+package auth
 
 import (
-	"api-go/auth"
 	"api-go/cache"
 	"api-go/serializer"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"time"
 )
+
+const (
+	JwtSecretKey   = "a random key"
+	JwtExpiresTime = time.Hour * 24
+)
+
+// jwt编码的结构体
+type JwtClaim struct {
+	jwt.StandardClaims
+	UserID uint
+}
 
 // jwt中间件
 func JwtRequired() gin.HandlerFunc {
@@ -21,8 +32,8 @@ func JwtRequired() gin.HandlerFunc {
 		}
 
 		// 解码token值
-		token, err := jwt.ParseWithClaims(userToken, &auth.Jwt{}, func(token *jwt.Token) (interface{}, error) {
-			return []byte(auth.JwtSecretKey), nil
+		token, err := jwt.ParseWithClaims(userToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
+			return []byte(JwtSecretKey), nil
 		})
 		if err != nil || token.Valid != true {
 			// 过期或者非正确处理
@@ -39,7 +50,7 @@ func JwtRequired() gin.HandlerFunc {
 		}
 
 		// 用户id存入上下文
-		if jwtStruct, ok := token.Claims.(*auth.Jwt); ok {
+		if jwtStruct, ok := token.Claims.(*JwtClaim); ok {
 			c.Set("user_id", &jwtStruct.UserID)
 		}
 

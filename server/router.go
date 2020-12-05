@@ -3,7 +3,7 @@ package server
 import (
 	"api-go/api"
 	"api-go/api/v1"
-	"api-go/middleware"
+	"api-go/middleware/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +24,7 @@ func InitRouter() *gin.Engine {
 
 		// 需要权限
 		jwtGroup := v1Group.Group("")
-		jwtGroup.Use(middleware.JwtRequired())
+		jwtGroup.Use(auth.JwtRequired())
 		{
 			// 查看个人信息
 			jwtGroup.GET("/user/me", v1.UserMe)

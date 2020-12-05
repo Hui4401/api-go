@@ -1,29 +1,26 @@
 package cache
 
 import (
-	"fmt"
-	"os"
-	"strconv"
-
 	"github.com/go-redis/redis"
+	"strconv"
 )
 
-// RedisClient Redis缓存客户端单例
+// Redis缓存客户端单例
 var RedisClient *redis.Client
 
-// Redis 在中间件中初始化redis链接
-func Redis() {
-	db, _ := strconv.ParseUint(os.Getenv("REDIS_DB"), 10, 64)
+// 初始化redis连接
+func Redis(addr string, password string, db string) {
+	dbNum, _ := strconv.Atoi(db)
 	client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_ADDR"),
-		Password: os.Getenv("REDIS_PW"),
-		DB:       int(db),
+		Addr:     addr,
+		Password: password,
+		DB:       dbNum,
 	})
 
 	_, err := client.Ping().Result()
 
 	if err != nil {
-		panic(fmt.Sprintf("连接Redis出现异常: %v", err))
+		panic("redis连接异常: " + err.Error())
 	}
 
 	RedisClient = client

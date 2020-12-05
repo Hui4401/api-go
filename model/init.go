@@ -10,10 +10,10 @@ import (
 var DB *gorm.DB
 
 // 初始化mysql连接
-func Database(connString string) {
-	db, err := gorm.Open(mysql.Open(connString), &gorm.Config{})
+func Database(dsn string) {
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic("connect mysql error: " + err.Error())
+		panic("mysql连接异常: " + err.Error())
 	}
 
 	// 设置连接池
