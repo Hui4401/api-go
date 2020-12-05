@@ -28,10 +28,9 @@ func InitRouter() *gin.Engine {
 		{
 			// 查看个人信息
 			jwtGroup.GET("/user/me", v1.UserMe)
-			//// 修改密码
-			//jwtGroup.POST("/user/changepassword", v1.ChangePassword)
-			//// 退出登录
-			//jwtGroup.POST("/user/logout", v1.Logout)
+
+			// 退出登录
+			jwtGroup.POST("/user/logout", v1.UserLogout)
 		}
 	}
 	return r
