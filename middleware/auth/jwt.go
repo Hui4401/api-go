@@ -3,13 +3,16 @@ package auth
 import (
 	"api-go/cache"
 	"api-go/serializer"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 const (
-	JwtSecretKey   = "a random key"
+	// jwt加密秘钥
+	JwtSecretKey = "a random key"
+	// jwt过期时间
 	JwtExpiresTime = time.Hour * 24
 )
 
@@ -32,9 +35,10 @@ func JwtRequired() gin.HandlerFunc {
 		}
 
 		// 解码token值
-		token, err := jwt.ParseWithClaims(userToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
-			return []byte(JwtSecretKey), nil
-		})
+		token, err := jwt.ParseWithClaims(userToken, &JwtClaim{},
+			func(token *jwt.Token) (interface{}, error) {
+				return []byte(JwtSecretKey), nil
+			})
 		if err != nil || token.Valid != true {
 			// 过期或者非正确处理
 			c.JSON(200, serializer.ErrorResponse(serializer.CodeTokenExpiredError))

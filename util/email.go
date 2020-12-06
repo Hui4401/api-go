@@ -42,5 +42,4 @@ func SendEmail(username string, password string, host string, to []string, subje
 	for i := 0; i < len(to); i++ {
 		<-isSuccess
 	}
-
 }

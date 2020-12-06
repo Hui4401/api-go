@@ -4,9 +4,10 @@ import (
 	"api-go/middleware/auth"
 	"api-go/model"
 	"api-go/serializer"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 // 用户登录所需信息

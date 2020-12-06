@@ -2,8 +2,9 @@ package server
 
 import (
 	"api-go/api"
-	"api-go/api/v1"
+	v1 "api-go/api/v1"
 	"api-go/middleware/auth"
+
 	"github.com/gin-gonic/gin"
 )
 

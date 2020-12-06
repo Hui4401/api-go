@@ -1,8 +1,9 @@
 package cache
 
 import (
-	"github.com/go-redis/redis"
 	"strconv"
+
+	"github.com/go-redis/redis"
 )
 
 // Redis缓存客户端单例

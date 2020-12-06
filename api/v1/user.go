@@ -3,7 +3,8 @@ package v1
 import (
 	"api-go/cache"
 	"api-go/serializer"
-	"api-go/service/v1"
+	v1 "api-go/service/v1"
+
 	"github.com/gin-gonic/gin"
 )
 

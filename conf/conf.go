@@ -3,9 +3,10 @@ package conf
 import (
 	"api-go/cache"
 	"api-go/model"
+	"os"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 // 初始化配置

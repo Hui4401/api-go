@@ -10,8 +10,10 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/jinzhu/gorm v1.9.16
 	github.com/joho/godotenv v1.3.0
+	github.com/sony/sonyflake v1.0.0
 	github.com/streadway/amqp v1.0.0
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c
+	golang.org/x/tools v0.0.0-20201204222352-654352759326 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.0.3

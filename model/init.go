@@ -1,9 +1,10 @@
 package model
 
 import (
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"time"
 )
 
 // 数据库链接单例

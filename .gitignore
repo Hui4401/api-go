@@ -18,3 +18,4 @@
 .vscode
 
 go.sum
+.env
