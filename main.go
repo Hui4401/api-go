@@ -2,7 +2,7 @@ package main
 
 import (
 	"api-go/conf"
-	"api-go/server"
+	"api-go/router"
 )
 
 func main() {
@@ -10,7 +10,7 @@ func main() {
 	conf.Init()
 
 	// 装载路由
-	r := server.InitRouter()
+	r := router.InitRouter()
 
 	// 运行在8080端口
 	r.Run()
