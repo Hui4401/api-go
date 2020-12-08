@@ -11,8 +11,8 @@ import (
 var DB *gorm.DB
 
 // 初始化mysql连接
-func Database(dsn string) {
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+func Database(url string) {
+	db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
 	if err != nil {
 		panic("mysql连接异常: " + err.Error())
 	}

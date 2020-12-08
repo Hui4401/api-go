@@ -48,6 +48,6 @@ func UserLogout(c *gin.Context) {
 	token, _ := c.Get("token")
 	tokenString := token.(string)
 
-	cache.RedisClient.SAdd("jwt:baned", tokenString)
+	cache.RedisClient.SAdd(cache.Context, "jwt:baned", tokenString)
 	c.JSON(200, serializer.OkResponse(nil))
 }

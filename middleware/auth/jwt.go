@@ -47,7 +47,7 @@ func JwtRequired() gin.HandlerFunc {
 		}
 
 		// 判断令牌是否在黑名单里面
-		if result, _ := cache.RedisClient.SIsMember("jwt:baned", token.Raw).Result(); result {
+		if result, _ := cache.RedisClient.SIsMember(cache.Context, "jwt:baned", token.Raw).Result(); result {
 			c.JSON(200, serializer.ErrorResponse(serializer.CodeTokenExpiredError))
 			c.Abort()
 			return
