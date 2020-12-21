@@ -41,5 +41,5 @@
 3. 进入项目目录，在终端执行 `go mod init 你需要的项目包名` 来修改项目包名
 4. 修改项目所有文件中的 **go-api** 为 **第三部修改的包名** （可以用 goland 打开后 ctrl+shift+f 全局替换）
 5. 项目依赖 MySQL 和 Redis，确保本机已经运行了这两个服务
-6. 将 **.env.example** 文件复制一份，重命名为 **.env** ，修改其中 MySQL 和 Redis 相关的配置
+6. 将 **example.env** 文件复制一份，重命名为 **.env** ，修改其中 MySQL 和 Redis 相关的配置
 7. 执行 `go run main.go` 即可把项目跑起来啦
