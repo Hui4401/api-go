@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8
+    container_name: api-go-mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: qwerdfb
+    volumes:
+      - /tmp/api-go/mysql/data:/var/lib/mysql
+  redis:
+    image: redis:6
+    container_name: api-go-redis
+    restart: always
+    ports:
+       - 6379:6379
+    volumes:
+      - /tmp/api-go/redis/data:/data
+  api-go:
+    container_name: api-go
+    build: .
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      - MYSQL_URL=root:qwerdfb@tcp(mysql:3306)/api_go?charset=utf8mb4&parseTime=True&loc=Local
+      - REDIS_URL=redis://redis:6379/0
+    ports:
+      - 8000:8000
