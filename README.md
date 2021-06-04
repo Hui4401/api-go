@@ -1,7 +1,6 @@
 # api-go
 
-以 Gin，Gorm 为基础的 Golang WebAPI 项目开发框架，可以以本项目为基础快速开发 Web API 服务，本项目大量参考 [singo](https://github.com/Gourouting/singo)，感谢！
-
+以 Gin，Gorm 为基础的 Golang WebAPI 项目开发框架，可以以本项目为基础快速开发 Web API 服务
 ## 项目工作
 
 1. 整合了一些常用组件：
