@@ -26,11 +26,20 @@
 3. 实现了一些常用代码方便参考和复用：
 
 - 一个简单的用户模型
+
 - /api/v1/user/register 用户注册接口
+
 - /api/v1/user/login 用户登录接口
+
 - /api/v1/user/me 用户资料接口(需传递token验证身份)
+
 - /api/v1/user/logout 用户登出接口(需传递token验证身份)
+
 - 一些可能用到的 util 小工具，目前有邮件发送，全局唯一ID生成器
+
+- [API示例](https://github.com/Hui4401/api-go/blob/main/HowToUseAPI.md)
+
+  
 
 
 ## 使用教程
