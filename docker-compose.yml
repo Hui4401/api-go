@@ -2,24 +2,24 @@ version: '3'
 services:
   mysql:
     image: mysql:8
-    container_name: api-go-mysql
+    container_name: handler-go-mysql
     restart: always
     ports:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: qwerdfb
     volumes:
-      - /tmp/api-go/mysql/data:/var/lib/mysql
+      - /tmp/handler-go/mysql/data:/var/lib/mysql
   redis:
     image: redis:6
-    container_name: api-go-redis
+    container_name: handler-go-redis
     restart: always
     ports:
        - 6379:6379
     volumes:
-      - /tmp/api-go/redis/data:/data
+      - /tmp/handler-go/redis/data:/data
   api-go:
-    container_name: api-go
+    container_name: handler-go
     build: .
     depends_on:
       - mysql

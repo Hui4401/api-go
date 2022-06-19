@@ -1,17 +1,29 @@
 package main
 
 import (
-	"api-go/conf"
-	"api-go/router"
+    "os"
+
+    "api-go/router"
+    "api-go/logs"
+    "api-go/model"
+    "api-go/cache"
+    "api-go/conf"
 )
 
 func main() {
-	// 从配置文件读取配置
-	conf.Init()
 
-	// 装载路由
-	r := router.InitRouter()
+    conf.Init()
+    logs.Init()
+    model.InitMySQL(os.Getenv("MYSQL_URL"))
+    cache.InitRedis(os.Getenv("REDIS_URL"))
 
-	// 运行在8080端口
-	r.Run()
+    defer func() {
+        _ = logs.Logger.Sync()
+    }()
+
+    r := router.InitRouter()
+
+    if err := r.Run(":8000"); err != nil {
+        logs.PanicKvs("run server failed", "error", err)
+    }
 }
