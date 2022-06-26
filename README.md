@@ -1,6 +1,7 @@
 # api-go
 
 以 Gin，Gorm 为基础的 Golang WebAPI 项目开发框架，可以以本项目为基础快速开发 Web API 服务
+
 ## 项目工作
 
 1. 整合了一些常用组件：
@@ -13,34 +14,24 @@
 
 2. 做了一个初步的模块划分：
 
-- api文件夹就是MVC框架的controller，负责处理请求
-- cache负责redis缓存相关的代码
-- conf负责整个项目的静态配置
-- middleware存放项目用到的相关中间件代码
-- model文件夹负责存储数据库模型和数据库操作相关的代码
-- router负责加载路由配置
-- serializer负责响应码，响应格式等相关配置
-- service负责处理比较复杂的业务，把业务代码模型化可以有效提高业务代码的质量（比如用户注册，充值，下单等）
-- util一些通用的小工具
+- conf 负责整个项目的静态配置
+- handler 负责处理请求
+- middleware 存放相关中间件代码
+- model 请求与响应结构体
+- router 路由配置
+- serializer 统一组装响应信息
+- service 处理比较复杂的业务
+- storage 存储模型和操作相关的代码
+- util 工具包，包括封装好的错误码和日志处理
 
 3. 实现了一些常用代码方便参考和复用：
 
 - 一个简单的用户模型
-
-- /api/v1/user/register 用户注册接口
-
-- /api/v1/user/login 用户登录接口
-
-- /api/v1/user/me 用户资料接口(需传递token验证身份)
-
-- /api/v1/user/logout 用户登出接口(需传递token验证身份)
-
-- 一些可能用到的 util 小工具，目前有邮件发送，全局唯一ID生成器
-
-- [API示例](https://github.com/Hui4401/api-go/blob/main/HowToUseAPI.md)
-
-  
-
+- /user/register 用户注册接口
+- /user/login 用户登录接口
+- /user/me 用户资料接口(需传递token验证身份)
+- /user/logout 用户登出接口(需传递token验证身份)
+- 一些可能用到的 util 小工具，目前有错误码管理、日志打印、邮件发送、全局唯一ID生成器
 
 ## 使用教程
 
@@ -51,3 +42,4 @@
 5. 项目依赖 MySQL 和 Redis，确保本机已经运行了这两个服务
 6. 将 **example.env** 文件复制一份，重命名为 **.env** ，修改其中 MySQL 和 Redis 相关的配置
 7. 执行 `go run main.go` 即可把项目跑起来啦
+8. [API示例（postman）](https://github.com/Hui4401/api-go/blob/main/HowToUseAPI.md)
