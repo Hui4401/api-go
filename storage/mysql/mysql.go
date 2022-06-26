@@ -1,4 +1,4 @@
-package model
+package mysql
 
 import (
     "time"
@@ -6,10 +6,10 @@ import (
     "gorm.io/driver/mysql"
     "gorm.io/gorm"
 
-    "api-go/logs"
+    "api-go/util/logs"
 )
 
-var DB *gorm.DB
+var client *gorm.DB
 
 func InitMySQL(url string) {
     db, err := gorm.Open(mysql.Open(url), &gorm.Config{})
@@ -19,7 +19,7 @@ func InitMySQL(url string) {
 
     sqlDB, err := db.DB()
     if err != nil {
-        logs.PanicKvs("get DB error", err)
+        logs.PanicKvs("get client error", err)
     }
     // 连接池中空闲连接的最大数量
     sqlDB.SetMaxIdleConns(300)
@@ -27,10 +27,10 @@ func InitMySQL(url string) {
     sqlDB.SetMaxOpenConns(500)
     // 连接可复用的最大时间
     sqlDB.SetConnMaxLifetime(time.Second * 30)
-    // 自动迁移模式
-    if err = db.AutoMigrate(&User{}); err != nil {
-        logs.PanicKvs("auto migration error", err)
-    }
 
-    DB = db
+    client = db
+}
+
+func GetClient() *gorm.DB {
+    return client
 }

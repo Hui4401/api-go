@@ -1,26 +1,33 @@
 package serializer
 
-// 基本响应格式
+import "api-go/util/errors"
+
 type Response struct {
-	Code errorCode   `json:"code"`
-	Msg  string      `json:"msg"`
-	Data interface{} `json:"data"`
+    Code int32       `json:"code"`
+    Msg  string      `json:"msg"`
+    Data interface{} `json:"data"`
 }
 
-// 请求成功响应
 func OkResponse(data interface{}) *Response {
-	return &Response{
-		Code: CodeOk,
-		Msg:  GetErrorMsg(CodeOk),
-		Data: data,
-	}
+    return &Response{
+        Code: errors.CodeOk,
+        Msg:  errors.GetErrorMsgByCode(errors.CodeOk),
+        Data: data,
+    }
 }
 
-// 请求失败响应
-func ErrorResponse(code errorCode) *Response {
-	return &Response{
-		Code: code,
-		Msg:  GetErrorMsg(code),
-		Data: nil,
-	}
+func ErrorResponse(err error) *Response {
+    return &Response{
+        Code: errors.GetErrorCode(err),
+        Msg:  errors.GetErrorMsg(err),
+        Data: nil,
+    }
+}
+
+func ErrorResponseByCode(code int32) *Response {
+    return &Response{
+        Code: code,
+        Msg:  errors.GetErrorMsgByCode(code),
+        Data: nil,
+    }
 }

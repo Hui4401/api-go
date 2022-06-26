@@ -9,9 +9,9 @@ import (
     "os"
 )
 
-var Logger *zap.SugaredLogger
+var logger *zap.SugaredLogger
 
-func Init() {
+func init() {
     var zapConfig zap.Config
 
     if gin.Mode() == gin.DebugMode || gin.Mode() == gin.TestMode {
@@ -43,27 +43,31 @@ func Init() {
         zap.AddStacktrace(zap.PanicLevel),
     )
     if err != nil {
-        log.Panicf("init zap Logger error: %s", err.Error())
+        log.Panicf("init zap logger error: %s", err.Error())
     }
-    Logger = _logger.Sugar()
+    logger = _logger.Sugar()
 }
 
 func DebugKvs(kvs ...interface{}) {
-    Logger.Debugw("", kvs...)
+    logger.Debugw("", kvs...)
 }
 
 func InfoKvs(kvs ...interface{}) {
-    Logger.Infow("", kvs...)
+    logger.Infow("", kvs...)
 }
 
 func WarnKvs(kvs ...interface{}) {
-    Logger.Warnw("", kvs...)
+    logger.Warnw("", kvs...)
 }
 
 func ErrorKvs(kvs ...interface{}) {
-    Logger.Errorw("", kvs...)
+    logger.Errorw("", kvs...)
 }
 
 func PanicKvs(kvs ...interface{}) {
-    Logger.Panicw("", kvs...)
+    logger.Panicw("", kvs...)
+}
+
+func Sync() {
+    _ = logger.Sync()
 }

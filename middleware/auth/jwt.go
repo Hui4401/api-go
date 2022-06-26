@@ -1,64 +1,63 @@
 package auth
 
 import (
-    "api-go/cache"
-    "api-go/serializer"
     "time"
+    "net/http"
 
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
+
+    "api-go/serializer"
+    "api-go/util/errors"
+    redisModel "api-go/storage/redis/model"
 )
 
 const (
-    // jwt加密秘钥
-    JwtSecretKey = "a random key"
-    // jwt过期时间
-    JwtExpiresTime = time.Hour * 24
+    JwtSecretKey   = "a random key"
+    JwtExpiredTime = time.Hour * 24 * 7
 )
 
-// jwt编码的结构体
 type JwtClaim struct {
     jwt.StandardClaims
     UserID uint
 }
 
-// jwt中间件
-func JwtRequired() gin.HandlerFunc {
+// JwtAuthRequired 通过jwt秘钥来验证用户身份
+func JwtAuthRequired() gin.HandlerFunc {
     return func(ctx *gin.Context) {
         // 从请求头获得token
-        userToken := ctx.Request.Header.Get("token")
+        userToken := ctx.Request.Header.Get("Authorization")
+
         // 判断请求头中是否有token
         if userToken == "" {
-            ctx.JSON(200, serializer.ErrorResponse(serializer.CodeTokenNotFoundError))
+            ctx.JSON(http.StatusOK, serializer.ErrorResponseByCode(errors.CodeTokenNotFound))
             ctx.Abort()
             return
         }
 
         // 解码token值
-        token, err := jwt.ParseWithClaims(userToken, &JwtClaim{},
-            func(token *jwt.Token) (interface{}, error) {
-                return []byte(JwtSecretKey), nil
-            })
+        token, err := jwt.ParseWithClaims(userToken, &JwtClaim{}, func(token *jwt.Token) (interface{}, error) {
+            return []byte(JwtSecretKey), nil
+        })
         if err != nil || token.Valid != true {
-            // 过期或者非正确处理
-            ctx.JSON(200, serializer.ErrorResponse(serializer.CodeTokenExpiredError))
+            // 过期或者token不正确
+            ctx.JSON(http.StatusOK, serializer.ErrorResponseByCode(errors.CodeTokenExpired))
             ctx.Abort()
             return
         }
 
-        // 判断令牌是否在黑名单里面
-        if result, _ := cache.Redis.SIsMember(ctx, "jwt:baned", token.Raw).Result(); result {
-            ctx.JSON(200, serializer.ErrorResponse(serializer.CodeTokenExpiredError))
+        // 判断token是否已退出登录
+        jd := redisModel.NewJwtDao()
+        if jd.IsBanedToken(ctx, token.Raw) {
+            ctx.JSON(http.StatusOK, serializer.ErrorResponseByCode(errors.CodeTokenExpired))
             ctx.Abort()
             return
         }
 
-        // 用户id存入上下文
+        // context保存token信息
         if jwtStruct, ok := token.Claims.(*JwtClaim); ok {
             ctx.Set("user_id", &jwtStruct.UserID)
         }
-
-        // 将Token放入Context, 用于退出登录添加黑名单
         ctx.Set("token", token.Raw)
     }
 }

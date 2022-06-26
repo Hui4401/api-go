@@ -1,13 +1,14 @@
-package cache
+package redis
 
 import (
     "context"
 
     "github.com/go-redis/redis/v8"
-    "api-go/logs"
+
+    "api-go/util/logs"
 )
 
-var Redis *redis.Client
+var client *redis.Client
 
 func InitRedis(url string) {
     ctx := context.Background()
@@ -15,12 +16,16 @@ func InitRedis(url string) {
     if err != nil {
         logs.PanicKvs("parse redis url error", err)
     }
-    client := redis.NewClient(opt)
+    c := redis.NewClient(opt)
 
-    _, err = client.Ping(ctx).Result()
+    _, err = c.Ping(ctx).Result()
     if err != nil {
         logs.PanicKvs("connect to redis error", err)
     }
 
-    Redis = client
+    client = c
+}
+
+func GetClient() *redis.Client {
+    return client
 }

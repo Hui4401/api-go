@@ -1,42 +1,28 @@
 package model
 
-import (
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
-)
-
-// 用户模型
-type User struct {
-	gorm.Model
-	Username string
-	Password string
-	Nickname string
+type UserInfo struct {
+    Id        uint   `json:"id"`
+    Username  string `json:"username"`
+    Nickname  string `json:"nickname"`
+    CreatedAt int64  `json:"created_at"`
 }
 
-const (
-	// 密码加密级别
-	passwordCost = bcrypt.DefaultCost
-)
-
-// 用ID获取用户
-func GetUser(ID uint) (*User, error) {
-	var user User
-	result := DB.First(&user, ID)
-	return &user, result.Error
+type UserRegisterRequest struct {
+    Username        string `json:"username" binding:"required,min=3,max=20"`
+    Password        string `json:"password" binding:"required,min=3,max=20"`
+    PasswordConfirm string `json:"password_confirm" binding:"required,min=3,max=20"`
 }
 
-// 设置密码
-func (user *User) SetPassword(password string) error {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), passwordCost)
-	if err != nil {
-		return err
-	}
-	user.Password = string(bytes)
-	return nil
+type UserRegisterResponse struct {
+    User *UserInfo `json:"user"`
 }
 
-// 校验密码
-func (user *User) CheckPassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	return err == nil
+type UserLoginRequest struct {
+    Username string `json:"username" binding:"required,min=3,max=20"`
+    Password string `json:"password" binding:"required,min=3,max=20"`
+}
+
+type UserLoginResponse struct {
+    Token string    `json:"token"`
+    User  *UserInfo `json:"user"`
 }
