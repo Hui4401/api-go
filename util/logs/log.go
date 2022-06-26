@@ -2,11 +2,11 @@ package logs
 
 import (
     "log"
+    "os"
 
     "go.uber.org/zap"
     "github.com/gin-gonic/gin"
     "go.uber.org/zap/zapcore"
-    "os"
 )
 
 var logger *zap.SugaredLogger
