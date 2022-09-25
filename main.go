@@ -27,6 +27,6 @@ func main() {
     router.InitRouter(r)
 
     if err := r.Run(":8080"); err != nil {
-        logs.PanicKvs("run server failed", "error", err)
+        logs.PanicKvs("run server error", err)
     }
 }
