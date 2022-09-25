@@ -5,12 +5,12 @@ import (
 
     "github.com/gin-gonic/gin"
 
-    "api-go/router"
     "api-go/conf"
-    "api-go/storage/redis"
+    "api-go/router"
     "api-go/storage/mysql"
-    "api-go/util/logs"
     sqlModel "api-go/storage/mysql/model"
+    "api-go/storage/redis"
+    "api-go/util/logs"
 )
 
 func main() {

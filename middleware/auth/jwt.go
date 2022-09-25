@@ -1,15 +1,15 @@
 package auth
 
 import (
-    "time"
     "net/http"
+    "time"
 
     "github.com/dgrijalva/jwt-go"
     "github.com/gin-gonic/gin"
 
     "api-go/serializer"
-    "api-go/util/errors"
     redisModel "api-go/storage/redis/model"
+    "api-go/util/errors"
 )
 
 const (

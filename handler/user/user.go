@@ -3,11 +3,11 @@ package user
 import (
     "github.com/gin-gonic/gin"
 
+    "api-go/model"
     "api-go/service/user"
     sqlModel "api-go/storage/mysql/model"
-    "api-go/model"
-    "api-go/util/errors"
     redisModel "api-go/storage/redis/model"
+    "api-go/util/errors"
 )
 
 // Register 用户注册

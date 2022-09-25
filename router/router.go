@@ -3,9 +3,9 @@ package router
 import (
     "github.com/gin-gonic/gin"
 
-    "api-go/middleware/auth"
-    "api-go/handler/user"
     "api-go/handler"
+    "api-go/handler/user"
+    "api-go/middleware/auth"
     "api-go/middleware/wrapper"
 )
 

@@ -6,8 +6,8 @@ import (
     "github.com/dgrijalva/jwt-go"
 
     "api-go/middleware/auth"
-    sqlModel "api-go/storage/mysql/model"
     "api-go/model"
+    sqlModel "api-go/storage/mysql/model"
     "api-go/util/errors"
 )
 
