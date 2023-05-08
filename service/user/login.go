@@ -45,7 +45,7 @@ func Login(req *model.UserLoginRequest) (*model.UserLoginResponse, error) {
 func generateToken(uid uint) (string, error) {
 	claim := auth.JwtClaim{
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(auth.JwtExpiredTime).Unix(),
+			ExpiresAt: time.Now().Add(constdef.UserTokenExpiredTime).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		UserID: uid,

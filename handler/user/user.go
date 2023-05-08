@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/Hui4401/gopkg/errors"
+	"github.com/Hui4401/gopkg/logs"
 	"github.com/gin-gonic/gin"
 
 	"api-go/constdef"
@@ -43,9 +44,23 @@ func Login(ctx *gin.Context) (interface{}, error) {
 
 // Me 查看个人信息
 func Me(ctx *gin.Context) (interface{}, error) {
-	u, err := getCurrentUser(ctx)
+	v, ok := ctx.Get(constdef.CtxUserID)
+	if !ok {
+		return nil, errors.NewCodeError(constdef.CodeTokenExpired)
+	}
+	userID, ok := v.(uint)
+	if !ok {
+		logs.CtxErrorKvs(ctx, "userID covert fail, v", v)
+		return nil, errors.NewCodeError(constdef.CodeUnknown)
+	}
+
+	ud := sqlModel.NewUserDao()
+	u, err := ud.GetUserByID(userID)
 	if err != nil {
 		return nil, err
+	}
+	if u == nil {
+		return nil, errors.NewCodeError(constdef.CodeUserNotExist)
 	}
 
 	userInfo := &model.UserInfo{
@@ -60,32 +75,15 @@ func Me(ctx *gin.Context) (interface{}, error) {
 
 // Logout 退出登录
 func Logout(ctx *gin.Context) (interface{}, error) {
-	token, ok := ctx.Get("token")
+	token, ok := ctx.Get(constdef.CtxUserToken)
 	if !ok {
 		return nil, errors.NewCodeError(constdef.CodeTokenNotFound)
 	}
 
 	jd := redisModel.NewJwtDao()
-	if err := jd.BanToken(ctx, token.(string)); err != nil {
+	if err := jd.BanToken(ctx, token.(string), constdef.UserTokenExpiredTime); err != nil {
 		return nil, err
 	}
 
 	return nil, nil
-}
-
-// getCurrentUser 获取当前用户
-func getCurrentUser(ctx *gin.Context) (*sqlModel.User, error) {
-	if uid, ok := ctx.Get("user_id"); ok {
-		ud := sqlModel.NewUserDao()
-		u, err := ud.GetUserByID(*uid.(*uint))
-		if err != nil {
-			return nil, err
-		}
-		if u == nil {
-			return nil, errors.NewCodeError(constdef.CodeUserNotExist)
-		}
-		return u, nil
-	}
-
-	return nil, errors.NewCodeError(constdef.CodeTokenExpired)
 }

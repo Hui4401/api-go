@@ -2,7 +2,6 @@ package auth
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -13,8 +12,7 @@ import (
 )
 
 const (
-	JwtSecretKey   = "a random key"
-	JwtExpiredTime = time.Hour * 24 * 7
+	JwtSecretKey = "a random key"
 )
 
 type JwtClaim struct {
@@ -56,8 +54,8 @@ func JwtAuthRequired() gin.HandlerFunc {
 
 		// context保存token信息
 		if jwtStruct, ok := token.Claims.(*JwtClaim); ok {
-			ctx.Set("user_id", &jwtStruct.UserID)
+			ctx.Set(constdef.CtxUserID, &jwtStruct.UserID)
 		}
-		ctx.Set("token", token.Raw)
+		ctx.Set(constdef.CtxUserToken, token.Raw)
 	}
 }
